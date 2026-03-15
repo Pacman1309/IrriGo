@@ -1,0 +1,1583 @@
+openapi: 3.0.0
+info:
+  title: API de Sistema Agrícola
+  description: >
+    API REST generada para la gestión integral de recursos agrícolas,
+    incluyendo usuarios, predios, áreas de riego, sensores y mediciones históricas.
+  version: 1.0.0
+  contact:
+    name: Soporte de Arquitectura
+    email: arquitectura@ejemplo.com
+    url: https://ejemplo.com/soporte
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Servidor de Desarrollo
+
+tags:
+  - name: Usuario
+  - name: Predio
+  - name: Usuario_predio
+  - name: RegistroAuditoria
+  - name: ModuloControl
+  - name: AreaRiego
+  - name: Sensor
+  - name: ConfiguracionCultivo
+  - name: Alerta
+  - name: MedicionHistorica
+
+paths:
+  # ==========================================
+  # /usuarios
+  # ==========================================
+  /usuarios:
+    get:
+      tags: [Usuario]
+      summary: Obtener todos los usuarios
+      description: Retorna una lista completa de todos los usuarios registrados en el sistema.
+      operationId: getUsuarios
+      responses:
+        '200':
+          description: Lista de usuarios obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags: [Usuario]
+      summary: Crear un usuario
+      description: Crea un nuevo registro de usuario en la base de datos.
+      operationId: createUsuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioInput'
+      responses:
+        '201':
+          description: Usuario creado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /usuarios/{id}:
+    get:
+      tags: [Usuario]
+      summary: Obtener un usuario por ID
+      description: Retorna los detalles de un usuario específico basado en su ID.
+      operationId: getUsuarioById
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Usuario encontrado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags: [Usuario]
+      summary: Actualizar un usuario
+      description: Actualiza la información de un usuario existente.
+      operationId: updateUsuario
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioInput'
+      responses:
+        '200':
+          description: Usuario actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags: [Usuario]
+      summary: Eliminar un usuario
+      description: Elimina lógicamente o físicamente un usuario del sistema.
+      operationId: deleteUsuario
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Usuario eliminado exitosamente (Sin contenido de respuesta).
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # ==========================================
+  # /predios
+  # ==========================================
+  /predios:
+    get:
+      tags: [Predio]
+      summary: Obtener todos los predios
+      description: Retorna una lista de todos los predios agrícolas registrados.
+      operationId: getPredios
+      responses:
+        '200':
+          description: Lista de predios obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Predio'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags: [Predio]
+      summary: Crear un predio
+      description: Registra un nuevo predio en el sistema.
+      operationId: createPredio
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PredioInput'
+      responses:
+        '201':
+          description: Predio creado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Predio'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /predios/{id}:
+    get:
+      tags: [Predio]
+      summary: Obtener un predio por ID
+      description: Retorna la información de un predio específico.
+      operationId: getPredioById
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Predio encontrado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Predio'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags: [Predio]
+      summary: Actualizar un predio
+      description: Actualiza los datos de un predio existente.
+      operationId: updatePredio
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PredioInput'
+      responses:
+        '200':
+          description: Predio actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Predio'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags: [Predio]
+      summary: Eliminar un predio
+      description: Elimina un predio específico del sistema.
+      operationId: deletePredio
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Predio eliminado exitosamente (Sin contenido de respuesta).
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # ==========================================
+  # /usuarios-predios
+  # ==========================================
+  /usuarios-predios:
+    get:
+      tags: [Usuario_predio]
+      summary: Obtener todas las asignaciones usuario-predio
+      description: Retorna la lista de relaciones entre usuarios y predios con sus respectivos roles.
+      operationId: getUsuariosPredios
+      responses:
+        '200':
+          description: Lista de asignaciones obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario_predio'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags: [Usuario_predio]
+      summary: Crear asignación usuario-predio
+      description: Asigna un usuario a un predio con un rol específico.
+      operationId: createUsuarioPredio
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario_predioInput'
+      responses:
+        '201':
+          description: Asignación creada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario_predio'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /usuarios-predios/{id}:
+    get:
+      tags: [Usuario_predio]
+      summary: Obtener asignación usuario-predio
+      description: Retorna los detalles de una asignación específica usando un ID compuesto.
+      operationId: getUsuarioPredioById
+      parameters:
+        - $ref: '#/components/parameters/IdParamString'
+      responses:
+        '200':
+          description: Asignación encontrada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario_predio'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags: [Usuario_predio]
+      summary: Actualizar asignación
+      description: Actualiza el rol u otros datos de una asignación usuario-predio.
+      operationId: updateUsuarioPredio
+      parameters:
+        - $ref: '#/components/parameters/IdParamString'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario_predioInput'
+      responses:
+        '200':
+          description: Asignación actualizada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario_predio'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags: [Usuario_predio]
+      summary: Eliminar asignación
+      description: Remueve la asignación de un usuario a un predio.
+      operationId: deleteUsuarioPredio
+      parameters:
+        - $ref: '#/components/parameters/IdParamString'
+      responses:
+        '204':
+          description: Asignación eliminada exitosamente (Sin contenido de respuesta).
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # ==========================================
+  # /registros-auditoria
+  # ==========================================
+  /registros-auditoria:
+    get:
+      tags: [RegistroAuditoria]
+      summary: Obtener auditorías
+      description: Retorna el historial de registros de auditoría del sistema.
+      operationId: getRegistrosAuditoria
+      responses:
+        '200':
+          description: Lista de registros obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RegistroAuditoria'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags: [RegistroAuditoria]
+      summary: Crear registro de auditoría
+      description: Inserta un nuevo evento en el registro de auditoría.
+      operationId: createRegistroAuditoria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistroAuditoriaInput'
+      responses:
+        '201':
+          description: Registro de auditoría creado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistroAuditoria'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /registros-auditoria/{id}:
+    get:
+      tags: [RegistroAuditoria]
+      summary: Obtener auditoría por ID
+      description: Retorna un registro de auditoría específico.
+      operationId: getRegistroAuditoriaById
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Registro encontrado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistroAuditoria'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags: [RegistroAuditoria]
+      summary: Actualizar registro auditoría
+      description: Modifica un registro de auditoría (uso administrativo).
+      operationId: updateRegistroAuditoria
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistroAuditoriaInput'
+      responses:
+        '200':
+          description: Registro actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistroAuditoria'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags: [RegistroAuditoria]
+      summary: Eliminar registro auditoría
+      description: Elimina un registro de auditoría del sistema.
+      operationId: deleteRegistroAuditoria
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Registro eliminado exitosamente (Sin contenido de respuesta).
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # ==========================================
+  # /modulos-control
+  # ==========================================
+  /modulos-control:
+    get:
+      tags: [ModuloControl]
+      summary: Obtener módulos de control
+      description: Retorna la lista de todos los módulos de control (hardware).
+      operationId: getModulosControl
+      responses:
+        '200':
+          description: Lista de módulos obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModuloControl'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags: [ModuloControl]
+      summary: Crear módulo
+      description: Registra un nuevo módulo de control en el sistema.
+      operationId: createModuloControl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModuloControlInput'
+      responses:
+        '201':
+          description: Módulo de control creado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModuloControl'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /modulos-control/{id}:
+    get:
+      tags: [ModuloControl]
+      summary: Obtener módulo por ID
+      description: Obtiene la información detallada de un módulo específico.
+      operationId: getModuloControlById
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Módulo encontrado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModuloControl'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags: [ModuloControl]
+      summary: Actualizar módulo
+      description: Actualiza los datos de un módulo de control.
+      operationId: updateModuloControl
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModuloControlInput'
+      responses:
+        '200':
+          description: Módulo actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModuloControl'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags: [ModuloControl]
+      summary: Eliminar módulo
+      description: Desactiva o elimina un módulo de control de la base de datos.
+      operationId: deleteModuloControl
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Módulo eliminado exitosamente (Sin contenido de respuesta).
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # ==========================================
+  # /areas-riego
+  # ==========================================
+  /areas-riego:
+    get:
+      tags: [AreaRiego]
+      summary: Obtener áreas de riego
+      description: Retorna una lista con todas las áreas de riego configuradas.
+      operationId: getAreasRiego
+      responses:
+        '200':
+          description: Lista de áreas obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AreaRiego'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags: [AreaRiego]
+      summary: Crear área de riego
+      description: Crea una nueva área de riego asociada a un predio.
+      operationId: createAreaRiego
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AreaRiegoInput'
+      responses:
+        '201':
+          description: Área de riego creada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AreaRiego'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /areas-riego/{id}:
+    get:
+      tags: [AreaRiego]
+      summary: Obtener área de riego por ID
+      description: Busca y retorna la información de un área de riego específica.
+      operationId: getAreaRiegoById
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Área encontrada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AreaRiego'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags: [AreaRiego]
+      summary: Actualizar área de riego
+      description: Modifica los parámetros de un área de riego existente.
+      operationId: updateAreaRiego
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AreaRiegoInput'
+      responses:
+        '200':
+          description: Área de riego actualizada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AreaRiego'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags: [AreaRiego]
+      summary: Eliminar área de riego
+      description: Remueve un área de riego del sistema.
+      operationId: deleteAreaRiego
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Área eliminada exitosamente (Sin contenido de respuesta).
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # ==========================================
+  # /sensores
+  # ==========================================
+  /sensores:
+    get:
+      tags: [Sensor]
+      summary: Obtener sensores
+      description: Retorna una lista con todos los sensores registrados.
+      operationId: getSensores
+      responses:
+        '200':
+          description: Lista de sensores obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sensor'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags: [Sensor]
+      summary: Crear sensor
+      description: Registra un nuevo sensor asociándolo a un módulo y área.
+      operationId: createSensor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SensorInput'
+      responses:
+        '201':
+          description: Sensor creado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sensor'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /sensores/{id}:
+    get:
+      tags: [Sensor]
+      summary: Obtener sensor por ID
+      description: Retorna los datos y estado de un sensor específico.
+      operationId: getSensorById
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Sensor encontrado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sensor'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags: [Sensor]
+      summary: Actualizar sensor
+      description: Actualiza los niveles de batería, señal u otra información del sensor.
+      operationId: updateSensor
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SensorInput'
+      responses:
+        '200':
+          description: Sensor actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sensor'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags: [Sensor]
+      summary: Eliminar sensor
+      description: Da de baja a un sensor en el sistema.
+      operationId: deleteSensor
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Sensor eliminado exitosamente (Sin contenido de respuesta).
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # ==========================================
+  # /configuraciones-cultivos
+  # ==========================================
+  /configuraciones-cultivos:
+    get:
+      tags: [ConfiguracionCultivo]
+      summary: Obtener configuraciones de cultivos
+      description: Retorna la lista de todas las configuraciones agronómicas guardadas.
+      operationId: getConfiguracionesCultivos
+      responses:
+        '200':
+          description: Configuraciones obtenidas exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConfiguracionCultivo'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags: [ConfiguracionCultivo]
+      summary: Crear configuración
+      description: Registra una nueva configuración de cultivo para un área específica.
+      operationId: createConfiguracionCultivo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfiguracionCultivoInput'
+      responses:
+        '201':
+          description: Configuración creada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfiguracionCultivo'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /configuraciones-cultivos/{id}:
+    get:
+      tags: [ConfiguracionCultivo]
+      summary: Obtener configuración por ID
+      description: Obtiene los detalles de una configuración de cultivo en particular.
+      operationId: getConfiguracionCultivoById
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Configuración encontrada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfiguracionCultivo'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags: [ConfiguracionCultivo]
+      summary: Actualizar configuración
+      description: Modifica los parámetros de una configuración de cultivo.
+      operationId: updateConfiguracionCultivo
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfiguracionCultivoInput'
+      responses:
+        '200':
+          description: Configuración actualizada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfiguracionCultivo'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags: [ConfiguracionCultivo]
+      summary: Eliminar configuración
+      description: Borra una configuración de cultivo del sistema.
+      operationId: deleteConfiguracionCultivo
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Configuración eliminada exitosamente (Sin contenido de respuesta).
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # ==========================================
+  # /alertas
+  # ==========================================
+  /alertas:
+    get:
+      tags: [Alerta]
+      summary: Obtener alertas
+      description: Retorna la lista de alertas generadas en el sistema.
+      operationId: getAlertas
+      responses:
+        '200':
+          description: Lista de alertas obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alerta'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags: [Alerta]
+      summary: Crear alerta
+      description: Genera una nueva alerta manual o automática para un área y usuario.
+      operationId: createAlerta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertaInput'
+      responses:
+        '201':
+          description: Alerta generada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alerta'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /alertas/{id}:
+    get:
+      tags: [Alerta]
+      summary: Obtener alerta por ID
+      description: Busca y retorna el detalle de una alerta específica.
+      operationId: getAlertaById
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Alerta encontrada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alerta'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags: [Alerta]
+      summary: Actualizar alerta
+      description: Modifica el estado de una alerta (ej. marcarla como leída).
+      operationId: updateAlerta
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertaInput'
+      responses:
+        '200':
+          description: Alerta actualizada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alerta'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags: [Alerta]
+      summary: Eliminar alerta
+      description: Elimina un registro de alerta del historial.
+      operationId: deleteAlerta
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Alerta eliminada exitosamente (Sin contenido de respuesta).
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # ==========================================
+  # /mediciones-historicas
+  # ==========================================
+  /mediciones-historicas:
+    get:
+      tags: [MedicionHistorica]
+      summary: Obtener mediciones históricas
+      description: Retorna la colección de todas las lecturas de sensores almacenadas.
+      operationId: getMedicionesHistoricas
+      responses:
+        '200':
+          description: Mediciones históricas obtenidas exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MedicionHistorica'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags: [MedicionHistorica]
+      summary: Crear medición histórica
+      description: Almacena una nueva lectura de datos agrometeorológicos.
+      operationId: createMedicionHistorica
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MedicionHistoricaInput'
+      responses:
+        '201':
+          description: Medición registrada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicionHistorica'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /mediciones-historicas/{id}:
+    get:
+      tags: [MedicionHistorica]
+      summary: Obtener medición histórica por ID
+      description: Consulta los datos exactos de una medición registrada previamente.
+      operationId: getMedicionHistoricaById
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Medición encontrada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicionHistorica'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags: [MedicionHistorica]
+      summary: Actualizar medición histórica
+      description: Corrige o actualiza los datos de un registro histórico.
+      operationId: updateMedicionHistorica
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MedicionHistoricaInput'
+      responses:
+        '200':
+          description: Medición actualizada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicionHistorica'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags: [MedicionHistorica]
+      summary: Eliminar medición histórica
+      description: Borra de la base de datos una medición específica.
+      operationId: deleteMedicionHistorica
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Medición eliminada exitosamente (Sin contenido de respuesta).
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      description: Identificador numérico único del recurso.
+      schema:
+        type: integer
+    IdParamString:
+      name: id
+      in: path
+      required: true
+      description: Identificador compuesto del recurso (ej. '1-2' para IDs relacionados).
+      schema:
+        type: string
+
+  responses:
+    BadRequest:
+      description: Petición inválida. El cuerpo de la solicitud no cumple con el esquema esperado.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Recurso no encontrado. El ID proporcionado no existe en el sistema.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Error interno del servidor al procesar la solicitud.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    # ------------------ Global Error ------------------
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: "404"
+        message:
+          type: string
+          example: "Recurso no encontrado"
+
+    # ------------------ Usuario ------------------
+    Usuario:
+      type: object
+      properties:
+        IDusuario:
+          type: integer
+        Nombre:
+          type: string
+        Apellido:
+          type: string
+        Email:
+          type: string
+        Contraseña:
+          type: string
+        Teléfono:
+          type: string
+      example:
+        IDusuario: 1
+        Nombre: "Juan"
+        Apellido: "Pérez"
+        Email: "juan.perez@email.com"
+        Contraseña: "hashed_password_123"
+        Teléfono: "555-1234"
+
+    UsuarioInput:
+      type: object
+      required: [Nombre, Email, Contraseña]
+      properties:
+        Nombre:
+          type: string
+        Apellido:
+          type: string
+        Email:
+          type: string
+        Contraseña:
+          type: string
+        Teléfono:
+          type: string
+      example:
+        Nombre: "Juan"
+        Apellido: "Pérez"
+        Email: "juan.perez@email.com"
+        Contraseña: "hashed_password_123"
+        Teléfono: "555-1234"
+
+    # ------------------ Predio ------------------
+    Predio:
+      type: object
+      properties:
+        IDpredio:
+          type: integer
+        NombrePredio:
+          type: string
+        Ubicación:
+          type: string
+        FechaCreación:
+          type: string
+          format: date-time
+      example:
+        IDpredio: 10
+        NombrePredio: "Finca El Sol"
+        Ubicación: "Valle Central, Sector 4"
+        FechaCreación: "2023-10-01T14:30:00Z"
+
+    PredioInput:
+      type: object
+      required: [NombrePredio]
+      properties:
+        NombrePredio:
+          type: string
+        Ubicación:
+          type: string
+      example:
+        NombrePredio: "Finca El Sol"
+        Ubicación: "Valle Central, Sector 4"
+
+    # ------------------ Usuario_predio ------------------
+    Usuario_predio:
+      type: object
+      properties:
+        IDusuario:
+          type: integer
+        IDpredio:
+          type: integer
+        Rol:
+          type: string
+        Fecha_Asignacion:
+          type: string
+          format: date-time
+      example:
+        IDusuario: 1
+        IDpredio: 10
+        Rol: "Administrador"
+        Fecha_Asignacion: "2023-10-05T09:15:00Z"
+
+    Usuario_predioInput:
+      type: object
+      required: [Rol]
+      properties:
+        IDusuario:
+          type: integer
+        IDpredio:
+          type: integer
+        Rol:
+          type: string
+      example:
+        IDusuario: 1
+        IDpredio: 10
+        Rol: "Administrador"
+
+    # ------------------ RegistroAuditoria ------------------
+    RegistroAuditoria:
+      type: object
+      properties:
+        IDregistro:
+          type: integer
+        IDusuario:
+          type: integer
+        ID_Area:
+          type: integer
+        Fecha_Modificacion:
+          type: string
+          format: date-time
+        Dato_Modificado:
+          type: string
+      example:
+        IDregistro: 501
+        IDusuario: 1
+        ID_Area: 3
+        Fecha_Modificacion: "2023-11-12T16:45:00Z"
+        Dato_Modificado: "{ \"humedad_min\": 30 }"
+
+    RegistroAuditoriaInput:
+      type: object
+      properties:
+        IDusuario:
+          type: integer
+        ID_Area:
+          type: integer
+        Dato_Modificado:
+          type: string
+      example:
+        IDusuario: 1
+        ID_Area: 3
+        Dato_Modificado: "{ \"humedad_min\": 30 }"
+
+    # ------------------ ModuloControl ------------------
+    ModuloControl:
+      type: object
+      properties:
+        ID_Modulo:
+          type: integer
+        Nombre:
+          type: string
+        IdentificadorRed:
+          type: string
+        Estado:
+          type: boolean
+        UltimaConexion:
+          type: string
+          format: date-time
+        Ultima_Actualizacion:
+          type: string
+          format: date-time
+      example:
+        ID_Modulo: 8
+        Nombre: "Nodo Central Bomba"
+        IdentificadorRed: "MAC-00:11:22:33:44"
+        Estado: true
+        UltimaConexion: "2023-11-20T08:00:00Z"
+        Ultima_Actualizacion: "2023-11-20T08:00:00Z"
+
+    ModuloControlInput:
+      type: object
+      properties:
+        Nombre:
+          type: string
+        IdentificadorRed:
+          type: string
+        UltimaConexion:
+          type: string
+          format: date-time
+        Ultima_Actualizacion:
+          type: string
+          format: date-time
+      example:
+        Nombre: "Nodo Central Bomba"
+        IdentificadorRed: "MAC-00:11:22:33:44"
+        UltimaConexion: "2023-11-20T08:00:00Z"
+        Ultima_Actualizacion: "2023-11-20T08:00:00Z"
+
+    # ------------------ AreaRiego ------------------
+    AreaRiego:
+      type: object
+      properties:
+        ID_Area:
+          type: integer
+        IDpredio:
+          type: integer
+        ID_Modulo:
+          type: integer
+        Nombre:
+          type: string
+        Num_Hectareas:
+          type: number
+          format: float
+        Estado:
+          type: boolean
+      example:
+        ID_Area: 3
+        IDpredio: 10
+        ID_Modulo: 8
+        Nombre: "Sector Norte - Maíz"
+        Num_Hectareas: 15.5
+        Estado: true
+
+    AreaRiegoInput:
+      type: object
+      properties:
+        IDpredio:
+          type: integer
+        ID_Modulo:
+          type: integer
+        Nombre:
+          type: string
+        Num_Hectareas:
+          type: number
+          format: float
+      example:
+        IDpredio: 10
+        ID_Modulo: 8
+        Nombre: "Sector Norte - Maíz"
+        Num_Hectareas: 15.5
+
+    # ------------------ Sensor ------------------
+    Sensor:
+      type: object
+      properties:
+        IDsensor:
+          type: integer
+        ID_Modulo:
+          type: integer
+        ID_Area:
+          type: integer
+        Bateria:
+          type: number
+          format: float
+        Señal:
+          type: number
+          format: float
+      example:
+        IDsensor: 102
+        ID_Modulo: 8
+        ID_Area: 3
+        Bateria: 85.5
+        Señal: -65.0
+
+    SensorInput:
+      type: object
+      properties:
+        ID_Modulo:
+          type: integer
+        ID_Area:
+          type: integer
+        Bateria:
+          type: number
+          format: float
+        Señal:
+          type: number
+          format: float
+      example:
+        ID_Modulo: 8
+        ID_Area: 3
+        Bateria: 85.5
+        Señal: -65.0
+
+    # ------------------ ConfiguracionCultivo ------------------
+    ConfiguracionCultivo:
+      type: object
+      properties:
+        ID_Configuracion:
+          type: integer
+        ID_Area:
+          type: integer
+        TipoCultivo:
+          type: string
+        TipoTierra:
+          type: string
+        CapacidadCampo:
+          type: number
+          format: float
+        PuntoMarchitez:
+          type: number
+          format: float
+        RangoHumedadMIN:
+          type: number
+          format: float
+        RangoHumedadMAX:
+          type: number
+          format: float
+        LaminaRiego:
+          type: number
+          format: float
+        DesarrolloVegetativo:
+          type: number
+          format: float
+      example:
+        ID_Configuracion: 1
+        ID_Area: 3
+        TipoCultivo: "Maíz Blanco"
+        TipoTierra: "Franco Arcilloso"
+        CapacidadCampo: 32.0
+        PuntoMarchitez: 15.0
+        RangoHumedadMIN: 20.0
+        RangoHumedadMAX: 28.0
+        LaminaRiego: 12.5
+        DesarrolloVegetativo: 45.0
+
+    ConfiguracionCultivoInput:
+      type: object
+      properties:
+        ID_Area:
+          type: integer
+        TipoCultivo:
+          type: string
+        TipoTierra:
+          type: string
+        CapacidadCampo:
+          type: number
+          format: float
+        PuntoMarchitez:
+          type: number
+          format: float
+        RangoHumedadMIN:
+          type: number
+          format: float
+        RangoHumedadMAX:
+          type: number
+          format: float
+        LaminaRiego:
+          type: number
+          format: float
+        DesarrolloVegetativo:
+          type: number
+          format: float
+      example:
+        ID_Area: 3
+        TipoCultivo: "Maíz Blanco"
+        TipoTierra: "Franco Arcilloso"
+        CapacidadCampo: 32.0
+        PuntoMarchitez: 15.0
+        RangoHumedadMIN: 20.0
+        RangoHumedadMAX: 28.0
+        LaminaRiego: 12.5
+        DesarrolloVegetativo: 45.0
+
+    # ------------------ Alerta ------------------
+    Alerta:
+      type: object
+      properties:
+        ID_Alerta:
+          type: integer
+        ID_area:
+          type: integer
+        IDusuario:
+          type: integer
+        Fecha:
+          type: string
+          format: date-time
+        Tipo:
+          type: string
+        Severidad:
+          type: string
+        Estado:
+          type: boolean
+        Leida:
+          type: boolean
+      example:
+        ID_Alerta: 405
+        ID_area: 3
+        IDusuario: 1
+        Fecha: "2023-11-20T10:05:00Z"
+        Tipo: "Humedad Baja"
+        Severidad: "Alta"
+        Estado: false
+        Leida: false
+
+    AlertaInput:
+      type: object
+      properties:
+        ID_area:
+          type: integer
+        IDusuario:
+          type: integer
+        Tipo:
+          type: string
+        Severidad:
+          type: string
+      example:
+        ID_area: 3
+        IDusuario: 1
+        Tipo: "Humedad Baja"
+        Severidad: "Alta"
+
+    # ------------------ MedicionHistorica ------------------
+    MedicionHistorica:
+      type: object
+      properties:
+        ID_Medicion:
+          type: integer
+        ID_Area:
+          type: integer
+        Fecha:
+          type: string
+          format: date-time
+        Temperatura_Suelo:
+          type: number
+          format: float
+        Humedad_suelo:
+          type: number
+          format: float
+        Evapotranspiracion:
+          type: number
+          format: float
+        Conductividad_suelo:
+          type: number
+          format: float
+        consumo_agua:
+          type: number
+          format: float
+        Desarrollo_vegetativa:
+          type: number
+          format: float
+      example:
+        ID_Medicion: 9942
+        ID_Area: 3
+        Fecha: "2023-11-20T12:00:00Z"
+        Temperatura_Suelo: 22.5
+        Humedad_suelo: 18.2
+        Evapotranspiracion: 4.5
+        Conductividad_suelo: 1.2
+        consumo_agua: 1500.0
+        Desarrollo_vegetativa: 46.0
+
+    MedicionHistoricaInput:
+      type: object
+      properties:
+        ID_Area:
+          type: integer
+        Temperatura_Suelo:
+          type: number
+          format: float
+        Humedad_suelo:
+          type: number
+          format: float
+        Evapotranspiracion:
+          type: number
+          format: float
+        Conductividad_suelo:
+          type: number
+          format: float
+        consumo_agua:
+          type: number
+          format: float
+        Desarrollo_vegetativa:
+          type: number
+          format: float
+      example:
+        ID_Area: 3
+        Temperatura_Suelo: 22.5
+        Humedad_suelo: 18.2
+        Evapotranspiracion: 4.5
+        Conductividad_suelo: 1.2
+        consumo_agua: 1500.0
+        Desarrollo_vegetativa: 46.0
